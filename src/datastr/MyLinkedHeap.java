@@ -4,6 +4,7 @@ public class MyLinkedHeap<Ttype> {
 	MyNode<Ttype> rootNode = null;
 	MyNode<Ttype> lastNode = null;
 	private int howManyElements = 0;
+	private int level = 0;
 	
 	public int length() {
 		return howManyElements;
@@ -34,7 +35,7 @@ public class MyLinkedHeap<Ttype> {
 			rootNode = newNode;
 			lastNode = newNode;
 			howManyElements++;
-		} else {
+		} else { //ja tiek pievienots kārtējais (ne pirmais) elements
 			//ja būs saknes elementam kreisais bērns
 			if(howManyElements == 1) {
 				rootNode.setLeftNode(newNode);
@@ -42,7 +43,7 @@ public class MyLinkedHeap<Ttype> {
 				lastNode = newNode;
 				howManyElements++;
 				level++;
-				//TODO izsaukt reheapUp funkciju
+				reheapUp(newNode);
 				return;
 			}
 			//pēdējam blokam nav neviens no bērniem
@@ -51,7 +52,7 @@ public class MyLinkedHeap<Ttype> {
 				newNode.setParentNode(lastNode);
 				lastNode = newNode;
 				howManyElements++;
-				//TODO izsaukt reheapUp funkciju
+				reheapUp(newNode);
 				return;
 			//kad pēdējam blokam nav blakus labais bloks
 			}
@@ -61,7 +62,7 @@ public class MyLinkedHeap<Ttype> {
 				newNode.setParentNode(parentNodeTemp);
 				lastNode = newNode;
 				howManyElements++;
-				//TODO izsaukt reheapUP funkciju
+				reheapUp(newNode);
 				return;
 			}
 			//2^0 = 1 elements 0.līmenī
@@ -84,9 +85,29 @@ public class MyLinkedHeap<Ttype> {
 				lastNode = newNode;
 				howManyElements++;
 				level++;
-				//TODO izsaucam reheapUP funkciju
+				reheapUp(newNode);
+				return;
 			}
 			//TODO izviedot pēdējo scenāriju, kur no labā bērna spēj pārlekt uz blakus apakškoka kreiso bērnu
 		}
+	}
+	
+	//MAX kaudzes gadījums
+	private void reheapUp(MyNode<Ttype> nodeTemp) {
+		//vai blokam ir vecāks
+		if(nodeTemp.getParentNode() != null) {
+			MyNode<Ttype> parentTempNode = nodeTemp.getParentNode();
+			if(((Comparable)nodeTemp.getValue()).compareTo(parentTempNode.getValue()) > 0) {
+				//mainam vietā vērtības
+				swap(nodeTemp, parentTempNode);
+				reheapUp(parentTempNode); //izsaucam šo pašu funkciju rekursīvi, bet 
+			}
+		}
+	}
+	
+	private void swap(MyNode<Ttype> node1, MyNode<Ttype> node2) {
+		Ttype temp = node1.getValue();
+		node1.setValue(node2.getValue());
+		node2.setValue(temp);
 	}
 }
