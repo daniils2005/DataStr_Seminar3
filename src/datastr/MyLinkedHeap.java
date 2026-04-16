@@ -21,4 +21,19 @@ public class MyLinkedHeap<Ttype> {
 	public boolean isEmpty() {
 		return howManyElements == 0;
 	}
+	
+	public void enqueue(Ttype element) throws Exception {
+		if(isFull()) {
+			throw new Exception("Kaudze ir pilna un nav iespējams pievienot elementu");
+		}
+		if(element == null) {
+			throw new Exception("Elements nevar būt null");
+		}
+		if(isEmpty()) {
+			MyNode<Ttype> newNode = new MyNode<Ttype>(element);
+			rootNode = newNode;
+			lastNode = newNode;
+			howManyElements++;
+		}
+	}
 }
