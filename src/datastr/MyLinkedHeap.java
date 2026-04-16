@@ -36,6 +36,16 @@ public class MyLinkedHeap<Ttype> {
 			lastNode = newNode;
 			howManyElements++;
 		} else { //ja tiek pievienots kārtējais (ne pirmais) elements
+			//kad pēdējam blokam nav blakus labais bloks
+			if(lastNode.getParentNode() != null && lastNode.getParentNode().getRightNode() == null) {
+				MyNode<Ttype> parentNodeTemp = lastNode.getParentNode();
+				parentNodeTemp.setRightNode(newNode);
+				newNode.setParentNode(parentNodeTemp);
+				lastNode = newNode;
+				howManyElements++;
+				reheapUp(newNode);
+				return;
+			}
 			//ja būs saknes elementam kreisais bērns
 			if(howManyElements == 1) {
 				rootNode.setLeftNode(newNode);
@@ -54,17 +64,8 @@ public class MyLinkedHeap<Ttype> {
 				howManyElements++;
 				reheapUp(newNode);
 				return;
-			//kad pēdējam blokam nav blakus labais bloks
 			}
-			if(lastNode.getParentNode() != null && lastNode.getParentNode().getRightNode() == null) {
-				MyNode<Ttype> parentNodeTemp = lastNode.getParentNode();
-				parentNodeTemp.setRightNode(newNode);
-				newNode.setParentNode(parentNodeTemp);
-				lastNode = newNode;
-				howManyElements++;
-				reheapUp(newNode);
-				return;
-			}
+
 			//2^0 = 1 elements 0.līmenī
 			//2^1 = 2 elementi 1.līmenī
 			//2^2 = 4 elementi 2.līmenī
@@ -110,4 +111,54 @@ public class MyLinkedHeap<Ttype> {
 		node1.setValue(node2.getValue());
 		node2.setValue(temp);
 	}
+	
+	public void print() throws Exception {
+		if(isEmpty()) {
+			throw new Exception("Kaudze ir tukša un to nevar izprintēt");
+		}
+		printHelper(rootNode);
+		
+	
+	}
+	
+	private void printHelper(MyNode<Ttype> nodeTemp) {
+		if(nodeTemp != null) {
+			System.out.println("P: " + nodeTemp.getValue());
+			//noskaidrojam, vai eksistē kreisais bērns
+			if(nodeTemp.getLeftNode() != null) {
+				System.out.println("P: " + nodeTemp.getValue() + " Left Child: " + nodeTemp.getLeftNode().getValue());
+				//izpildi so pasu funkciju uz kreiso bērnu
+				printHelper(nodeTemp.getLeftNode());
+			}
+			//noskaidrojam, vai eksistē labais bērns
+			if(nodeTemp.getRightNode() != null) {
+				System.out.println("P: " + nodeTemp.getValue() + " Right child: " + nodeTemp.getRightNode().getValue());
+			}
+			printHelper(nodeTemp.getRightNode());
+		}
+	}
+	
+	//uztaisīt dequeue funkciju
+	//veicam visas pārbaudes
+	//saglabāsim root elementu mainīgajā
+	//pēdējo bloka vērtību ieliekam root blokā
+	//samazinam howManyElements
+	//lastNode samainīt (level samazināt, kur tas nepieciešams)
+	//reheapDown izsaukt
+	//atgriežam elementu, kurš bija sākumā saknes blokā
+	
+	public Ttype dequeue() throws Exception {
+		if(isEmpty()) {
+			throw new Exception("Kaudze ir tukša un nav iespējams noņem elementu");
+		}
+		Ttype rootValue = rootNode.getValue();
+	}
+	
+	
+	
+	
+	//leftChindex = parentindex*2+1
+	//rightChindex = parentindex*2+2
+	//parentindex = (leftChindex-1)/2
+	//parentindex = (rightChindex-2)/2
 }

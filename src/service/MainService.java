@@ -1,10 +1,20 @@
 package service;
 
+import datastr.MyLinkedHeap;
+
 public class MainService {
 
+	public static void main(String[] args) {
+		MyLinkedHeap<Integer> integersInHeap = new MyLinkedHeap<Integer>();
+		try {
+			integersInHeap.enqueue(40); //P: 40
+			integersInHeap.enqueue(50); //P: 50(LC: 40)
+			integersInHeap.enqueue(35); //P: 50(LC40, RC: 35)
+			integersInHeap.enqueue(99); //P: 99(LC50, RC: 35), P:50(LC: 40)
+			integersInHeap.enqueue(55); //P: 99(LC:55, RC: 35),
+			integersInHeap.print();
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
 }
-
-//leftChindex = parentindex*2+1
-//rightChindex = parentindex*2+2
-//parentindex = (leftChindex-1)/2
-//parentindex = (rightChindex-2)/2
