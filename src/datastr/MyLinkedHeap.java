@@ -27,26 +27,19 @@ public class MyLinkedHeap<Ttype> {
 		if(isFull()) {
 			throw new Exception("Kaudze ir pilna un nav iespējams pievienot elementu");
 		}
+		
 		if(element == null) {
 			throw new Exception("Elements nevar būt null");
 		}
-		MyNode<Ttype> newNode = new MyNode<Ttype>(element);
+		
 		if(isEmpty()) {
+			MyNode<Ttype> newNode = new MyNode<Ttype>(element);
 			rootNode = newNode;
 			lastNode = newNode;
 			howManyElements++;
 		} else { //ja tiek pievienots kārtējais (ne pirmais) elements
 			//kad pēdējam blokam nav blakus labais bloks
-			if(lastNode.getParentNode() != null && lastNode.getParentNode().getRightNode() == null) {
-				MyNode<Ttype> parentNodeTemp = lastNode.getParentNode();
-				parentNodeTemp.setRightNode(newNode);
-				newNode.setParentNode(parentNodeTemp);
-				lastNode = newNode;
-				howManyElements++;
-				reheapUp(newNode);
-				return;
-			}
-			//ja būs saknes elementam kreisais bērns
+			MyNode<Ttype> newNode = new MyNode<Ttype>(element);
 			if(howManyElements == 1) {
 				rootNode.setLeftNode(newNode);
 				newNode.setParentNode(rootNode);
@@ -56,10 +49,11 @@ public class MyLinkedHeap<Ttype> {
 				reheapUp(newNode);
 				return;
 			}
-			//pēdējam blokam nav neviens no bērniem
-			if(lastNode.getLeftNode() == null && lastNode.getRightNode() == null) {
-				lastNode.setLeftNode(newNode);
-				newNode.setParentNode(lastNode);
+			
+			if(lastNode.getParentNode() != null && lastNode.getParentNode().getRightNode() == null) {
+				MyNode<Ttype> parentNodeTemp = lastNode.getParentNode();
+				parentNodeTemp.setRightNode(newNode);
+				newNode.setParentNode(parentNodeTemp);
 				lastNode = newNode;
 				howManyElements++;
 				reheapUp(newNode);
@@ -88,6 +82,15 @@ public class MyLinkedHeap<Ttype> {
 				level++;
 				reheapUp(newNode);
 				return;
+			} else {
+				if (lastNode.getLeftNode() == null && lastNode.getRightNode() == null) {
+					lastNode.setLeftNode(newNode);
+					newNode.setParentNode(lastNode);
+					lastNode = newNode;
+					howManyElements++;
+					reheapUp(newNode);
+					return;
+				}
 			}
 			//TODO izviedot pēdējo scenāriju, kur no labā bērna spēj pārlekt uz blakus apakškoka kreiso bērnu
 		}
@@ -147,7 +150,7 @@ public class MyLinkedHeap<Ttype> {
 	//reheapDown izsaukt
 	//atgriežam elementu, kurš bija sākumā saknes blokā
 	
-	public Ttype dequeue() throws Exception {
+	public void dequeue() throws Exception {
 		if(isEmpty()) {
 			throw new Exception("Kaudze ir tukša un nav iespējams noņem elementu");
 		}
