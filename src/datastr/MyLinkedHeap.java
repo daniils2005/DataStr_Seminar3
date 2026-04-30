@@ -141,6 +141,25 @@ public class MyLinkedHeap<Ttype> {
 		}
 	}
 	
+	private MyNode<Ttype> getLastNodeByNumber(int number) throws Exception {
+		if(number < 1) {
+			throw new Exception("Kartas skaitlis nevar but mazaks par 1");
+		}
+		
+		//ja number ir 6, tad binary bus 110
+		String binary = Integer.toBinaryString(number);
+		MyNode<Ttype> currentNode = rootNode;
+		
+		for(int i = 1; i < binary.length(); i++) {
+			if(binary.charAt(i) == '0') {
+				currentNode = currentNode.getLeftNode();
+			} else {
+				currentNode = currentNode.getRightNode();
+			}
+		}
+	}
+	
+	
 	//uztaisīt dequeue funkciju
 	//veicam visas pārbaudes
 	//saglabāsim root elementu mainīgajā
@@ -149,14 +168,6 @@ public class MyLinkedHeap<Ttype> {
 	//lastNode samainīt (level samazināt, kur tas nepieciešams)
 	//reheapDown izsaukt
 	//atgriežam elementu, kurš bija sākumā saknes blokā
-	
-	public void dequeue() throws Exception {
-		if(isEmpty()) {
-			throw new Exception("Kaudze ir tukša un nav iespējams noņem elementu");
-		}
-		Ttype rootValue = rootNode.getValue();
-	}
-	
 	
 	
 	
