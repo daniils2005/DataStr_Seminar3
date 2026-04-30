@@ -24,23 +24,24 @@ public class MyLinkedHeap<Ttype> {
 	}
 	
 	public void enqueue(Ttype element) throws Exception {
-		if(isFull()) {
+		if (isFull()) {
 			throw new Exception("Kaudze ir pilna un nav iespējams pievienot elementu");
 		}
-		
-		if(element == null) {
+
+		if (element == null) {
 			throw new Exception("Elements nevar būt null");
 		}
-		
-		if(isEmpty()) {
+
+		if (isEmpty()) {// ja tiek pievienots pirmais elements
 			MyNode<Ttype> newNode = new MyNode<Ttype>(element);
 			rootNode = newNode;
 			lastNode = newNode;
 			howManyElements++;
-		} else { //ja tiek pievienots kārtējais (ne pirmais) elements
-			//kad pēdējam blokam nav blakus labais bloks
+		} else// ja tiek pievienots kārtējais ( ne pirmais) elements
+		{
 			MyNode<Ttype> newNode = new MyNode<Ttype>(element);
-			if(howManyElements == 1) {
+			// ja būs saknes elementam kreisais bērns
+			if (howManyElements == 1) {
 				rootNode.setLeftNode(newNode);
 				newNode.setParentNode(rootNode);
 				lastNode = newNode;
@@ -49,40 +50,71 @@ public class MyLinkedHeap<Ttype> {
 				reheapUp(newNode);
 				return;
 			}
-			
-			if(lastNode.getParentNode() != null && lastNode.getParentNode().getRightNode() == null) {
+
+			// kad pedjeam blokam nav blakus labais bloks
+			if (lastNode.getParentNode() != null && lastNode.getParentNode().getRightNode() == null) {
+
 				MyNode<Ttype> parentNodeTemp = lastNode.getParentNode();
 				parentNodeTemp.setRightNode(newNode);
 				newNode.setParentNode(parentNodeTemp);
+
 				lastNode = newNode;
 				howManyElements++;
 				reheapUp(newNode);
 				return;
+
+			}
+			// 2^0 = 1 elements 0.līmenī
+			// 2^1 = 2 elementi 1.līmenī
+			// 2^2 = 4 elementi 2.līmenī
+			int sum = 0;
+			// es noskaidroju, cik ir jābūt blokiem līdz šim līmenim ieskaitot
+			for (int i = 0; i <= level; i++) {
+				sum = (int) (sum + Math.pow(2, i));
 			}
 
-			//2^0 = 1 elements 0.līmenī
-			//2^1 = 2 elementi 1.līmenī
-			//2^2 = 4 elementi 2.līmenī
-			int sum = 0;
-			//es noskaidroju, cik ir jābūt blokiem līdz šim līmenim ieskaitot
-			for(int i = 0; i <= level; i++) {
-				sum = (int)(sum + Math.pow(2, i));
-			}
-			//lastNode ir kā pēdējais bloks savā līmenī
-			if(sum == howManyElements) {
+			// lastNode ir kā pēdejais bloks sava līmenī
+			if (sum == howManyElements) {
 				MyNode<Ttype> currentNode = rootNode;
-				while(currentNode.getLeftNode() != null) {
+
+				// ja blokam ir kreisais berns, tad jelec uz to
+				while (currentNode.getLeftNode() != null) {
 					currentNode = currentNode.getLeftNode();
 				}
+
 				lastNode = currentNode;
+
 				lastNode.setLeftNode(newNode);
 				newNode.setParentNode(lastNode);
+
 				lastNode = newNode;
 				howManyElements++;
 				level++;
 				reheapUp(newNode);
 				return;
+
 			} else {
+				// pēdējam blokam ir abi bērni
+				if (lastNode.getParentNode().getLeftNode() != null
+						&& lastNode.getParentNode().getRightNode() != null) {
+
+					int numberForNewNode = howManyElements;
+					//otrais -1, jo kartas skaitlis sāks no 1 nevis no 0 ka masīva
+					int numberForNewNodeParent = (numberForNewNode-1 -1)/2;
+					System.out.println("Parent number: " + numberForNewNodeParent);
+					//leftIndex = parentIndex*2 + 1;
+					//((leftIndex -1)/2) = parentIndex
+					//rightIndex = parentIndex*2 +2
+					MyNode currentParent = getLastNodeByNumber(numberForNewNodeParent);
+					currentParent.setLeftNode(newNode);
+					newNode.setParentNode(currentParent);
+					lastNode = newNode;
+					reheapUp(newNode);
+					howManyElements++;
+					return;
+				}
+
+				// pēdējam blokam nav neviens no bērniem
 				if (lastNode.getLeftNode() == null && lastNode.getRightNode() == null) {
 					lastNode.setLeftNode(newNode);
 					newNode.setParentNode(lastNode);
@@ -91,9 +123,12 @@ public class MyLinkedHeap<Ttype> {
 					reheapUp(newNode);
 					return;
 				}
+
 			}
-			//TODO izviedot pēdējo scenāriju, kur no labā bērna spēj pārlekt uz blakus apakškoka kreiso bērnu
+
+			
 		}
+
 	}
 	
 	//MAX kaudzes gadījums
@@ -157,6 +192,8 @@ public class MyLinkedHeap<Ttype> {
 				currentNode = currentNode.getRightNode();
 			}
 		}
+		
+		return currentNode;
 	}
 	
 	
